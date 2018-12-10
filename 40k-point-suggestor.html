@@ -64,7 +64,7 @@
 					{unit:"Primaris Captain",powerLevel:118,description:"P Captain in Gravis Armour with Boltstorm Guantlet",UID:2},
 					{unit:"Chaplain",powerLevel:97,description:"Chaplain with JP, Inferno Pistol and Crozius",UID:3},
 					{unit:"Primaris Leiutennant",powerLevel:74,description:"Leiutennant with Power Sword and Bolt Pistol",UID:4},
-					{unit:"Librarian",powerLevel:7,description:"Librarian with JP and Force Staff",UID:5},
+					{unit:"Librarian",powerLevel:112,description:"Librarian with JP and Force Staff",UID:5},
 					{unit:"Primaris Leiutennant",powerLevel:75,description:"Leiutennant with Master-crafter Stalker Bolt Rifle",UID:6},
 					{unit:"Librarian Dreadnought",powerLevel:154,description:"Librarian Dread with Fist, Force Halberd and Heavy Flamer",UID:7},
 				],
@@ -136,6 +136,21 @@
 					{unit:"Razorback",powerLevel:82,description:"Carry 6, Twin Heavy Bolter",UID:14},
 					{unit:"Razorback",powerLevel:105,description:"Carry 6, Twin Lascannon",UID:15}
 					
+				],
+				notTRorEL:[
+					{unit:"Inceptor Squad",powerLevel:135,description:"3w/ Dual Assault Bolters",UID:1},
+					{unit:"Inceptor Squad",powerLevel:177,description:"3w/ Dual Plasma Exterminators",UID:2},
+					{unit:"Bike Squad",powerLevel:69,description:"3 Bikes",UID:3},
+					{unit:"Bike Squad",powerLevel:118,description:"3 Bikes + Attack Bike w/ Multi-Melta",UID:3},
+					{unit:"Bike Squad",powerLevel:138,description:"6 Bikes",UID:3},
+					{unit:"Bike Squad",powerLevel:233,description:"8 Bikes + Attack Bike w/ Multi-Melta",UID:3},
+					{unit:"Bike Squad",powerLevel:49,description:"1 Attack Bike",UID:3},
+					{unit:"Devastator Squad",powerLevel:212,description:"Sgt w/ Signum, 4w/ Heavy Weapons, 5w/ Boltgun",UID:4},
+					{unit:"Hellblaster Squad",powerLevel:165,description:"5w/ Plasma Incinerators",UID:5},
+					{unit:"Preadator",powerLevel:180,description:"1 Preadator with Twin Lascannon + 2 Lascannon",UID:6},
+					{unit:"Rhino",powerLevel:72,description:"Carry 10, Storm Bolter",UID:7},
+					{unit:"Razorback",powerLevel:82,description:"Carry 6, Twin Heavy Bolter",UID:8},
+					{unit:"Razorback",powerLevel:105,description:"Carry 6, Twin Lascannon",UID:9}
 				],
 				fastAtatck:[
 					{unit:"Inceptor Squad",powerLevel:135,description:"3w/ Dual Assault Bolters",UID:1},
@@ -249,7 +264,7 @@
 					numHQ = 1;
 					numTR = 1;
 					framework = "Patrol";
-				}else{
+				}else if(upperLimit < 1500){
 					let chooseOption = pick(2);
 					if(chooseOption === 0){
 						numHQ = 2;
@@ -260,6 +275,11 @@
 						numEL = 3;
 						framework = "Vanguard";
 					}
+				}else{
+					numHQ = 3;
+					numTR = 3;
+					numEL = 3;
+					framework = "Battalion + Vanguard";
 				}
 				
 				//pick hq's
@@ -314,7 +334,8 @@
 					}
 				}
 				
-				if(numEL !== 0){
+				//need something for patrols to pull from anything!
+				if(framework === "Vanguard"){
 					
 					let tempNE = roster.notElites.slice();
 					let keepGoing = true;
@@ -341,7 +362,7 @@
 						}
 					}
 					
-				}else{
+				}else if(framework === "Battalion"){
 					
 					let tempNT = roster.notTroops.slice();
 					let keepGoing = true;
@@ -368,11 +389,34 @@
 						}
 					}
 					
+				}else{
+				
+					let tempNTE = roster.notTRorEL.slice();
+					let keepGoing = true;
+					while(keepGoing === true){
+						//pick notElite at random, note it's UID and push to team!
+						let index = pick(tempNTE.length);
+						let uniqueness = tempNTE[index].UID;
+						team.push(tempNTE[index]);
+						
+						for(let j=0;j<tempNTE.length;j++){
+							if(tempNTE[j].UID === uniqueness){
+								tempNTE.splice(j,1);
+								j--;
+							}
+						}
+						
+						let teamCost = 0;
+						team.forEach(function(item){
+							teamCost += item.powerLevel;
+						})
+						if(teamCost > upperLimit){
+							team.pop();
+							keepGoing = false;
+						}
+					}
+				
 				}
-				
-				
-				////////////////////////////////////////////////////////////OLD///////////////////////
-
 
 				
 				//generate meta and post
