@@ -307,18 +307,32 @@
 				//Probably filter into several arrays and stictch them all together!
 				let hqarray = team.filter(model => model.role == "HQ");
 				let trarray = team.filter(model => model.role == "TR");
+				let elarray = team.filter(model => model.role == "EL");
+				let faarray = team.filter(model => model.role == "FA");
+				let hsarray = team.filter(model => model.role == "HS");
+				let dtarray = team.filter(model => model.role == "DT");
 				console.log(hqarray);
 				console.log(trarray);
 				
-				team.sort(function(a,b){
-					if(a.role < b.role){
-						return -1;
-					}
-					if(a.role > b.role){
-						return 1;
-					}
-					return 0;
-				});
+				team = [];
+				hqarray.forEach(function(element){
+					team.push(element)
+				})
+				trarray.forEach(function(element){
+					team.push(element)
+				})
+				elarray.forEach(function(element){
+					team.push(element)
+				})
+				faarray.forEach(function(element){
+					team.push(element)
+				})
+				hsarray.forEach(function(element){
+					team.push(element)
+				})
+				dtarray.forEach(function(element){
+					team.push(element)
+				})
 
 				//generate meta and post
 				let teamCost = 0;
